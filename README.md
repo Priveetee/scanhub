@@ -1,26 +1,34 @@
-**Présentation du projet**
+# **Project Introduction**
 
-Ce projet est né d'une problématique simple : les CVE (Common Vulnerabilities and Exposures). La question que je me suis posée est la suivante :
+This project was born out of a simple problem: Common Vulnerabilities and Exposures (CVEs). The question I asked myself was:
 
-Comment pouvons-nous simplifier la vie des développeurs qui doivent analyser les CVE, alors qu'ils ont à leur disposition une multitude d'outils, chacun avec ses qualités et ses défauts ? Actuellement, les développeurs doivent chercher à droite et à gauche, tout combiner et finalement, ils sont souvent démotivés et ne font que progresser lentement.
+How can we simplify the lives of developers who need to analyze CVEs, given the multitude of tools available, each with its own strengths and weaknesses? Currently, developers have to search high and low, combine everything, and often end up demotivated, making slow progress.
 
-**Objectifs du projet**
+---
 
-Pour résoudre ce problème, j'ai décidé de partir avec deux objectifs principaux :
+# **Project Objectives**
 
-* Offrir un frontend simple et intuitif
-* Offrir un backend extrêmement complet et solide
+To address this issue, I set out with two main objectives:
 
-**Choix des technologies**
+* Provide a simple and intuitive frontend
+* Offer an extremely comprehensive and robust backend
 
-Pour le frontend, j'ai initialement choisi Remix, un excellent framework. Cependant, au fur et à mesure que le développement progressait, la complexité de la page augmentait, les erreurs devenaient de plus en plus fréquentes, etc. J'ai donc décidé de changer de technologie et de choisir Svelte Kit + Bun, deux technologies que je ne connaissais pas forcément, mais qui se sont avérées très efficaces, logiques, propres et bien documentées.
+---
 
-Pour le backend, j'ai cherché une technologie qui soit stable, bien structurée et qui se conteneurise bien. Go a donc été un choix évident pour moi, car c'est un langage stable, évolutif et compilé, ce qui me garantit stabilité et efficacité.
+# **Technology Choices**
 
-**Caractéristiques du projet**
+For the frontend, I initially chose Remix, an excellent framework. However, as development progressed, the complexity of the page increased, errors became more frequent, etc. I decided to switch technologies and chose Svelte Kit + Bun, two technologies I wasn't necessarily familiar with but found to be very efficient, logical, clean, and well-documented.
 
-Ce projet est complètement Open-Source et libre, vous êtes libres de le modifier et de le redistribuer comme vous le souhaitez. N'hésitez pas à créer des issues ou à contribuer au projet.
+For the backend, I sought a technology that was stable, well-structured, and container-friendly. Go was an obvious choice for me, as it is a stable, scalable, and compiled language, ensuring stability and efficiency.
 
-**État du projet**
+---
 
-Le projet est actuellement en développement actif et je fais de mon mieux pour le maintenir et ajouter de nouvelles fonctionnalités. Je suis ravi de partager ce projet avec vous et j'espère que vous allez l'apprécier !
+# **Project Features**
+
+This project is completely open-source and free. You are welcome to modify and redistribute it as you wish. Feel free to create issues or contribute to the project.
+
+---
+
+# **Project Status**
+
+The project is currently in active development, and I am doing my best to maintain it and add new features. I am thrilled to share this project with you and hope you will enjoy it!
