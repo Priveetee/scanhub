@@ -72,12 +72,12 @@
     }
     
     function handleExampleClick(example: string) {
-      console.log('handleExampleClick appelé avec:', example);
+     // console.log('handleExampleClick appelé avec:', example);
       imagePath = example;
       
       // Forcer une mise à jour du DOM avec un délai
       setTimeout(() => {
-        console.log('Focus appliqué, imagePath =', imagePath);
+       // console.log('Focus appliqué, imagePath =', imagePath);
         inputElement?.focus();
       }, 10);
     }
