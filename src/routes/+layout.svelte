@@ -9,12 +9,12 @@
 	
 	let { children } = $props();
 	
-	// State
-	let isSearching = false;
-	let searchQuery = '';
-	let searchRegistry = '';
-	let searchResults: CVEResult[] = [];
-	let isLoading = false;
+	// State - using $state() for reactivity in Svelte 5
+	let isSearching = $state(false);
+	let searchQuery = $state('');
+	let searchRegistry = $state('');
+	let searchResults = $state<CVEResult[]>([]);
+	let isLoading = $state(false);
 	
 	async function onSearch(query: string, registry: string) {
 	  console.log('Searching for', query, 'in registry', registry);
@@ -72,7 +72,7 @@
 	        class="mb-6"
 	      >
 	        <button 
-	          on:click={resetSearch}
+	          onclick={() => resetSearch()}
 	          class="flex items-center text-slate-300 hover:text-white transition-colors"
 	        >
 	          <svg 
