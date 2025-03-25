@@ -95,7 +95,7 @@
         <form on:submit|preventDefault={handleSubmit} class="relative w-full">
           <div 
             class="absolute -inset-6 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-blue-600/10 rounded-full blur-3xl" 
-            style="opacity: {$glowOpacity * 0.5};"
+            style="opacity: {$glowOpacity * 0.1};"
           ></div>
           
           <div class="relative" 
@@ -118,8 +118,8 @@
                   <div class="animate-spin text-blue-400">
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
-                      width="22" 
-                      height="22" 
+                      width="26" 
+                      height="20" 
                       viewBox="0 0 24 24" 
                       fill="none" 
                       stroke="currentColor" 
@@ -202,7 +202,7 @@
                   aria-label="Change registry"
                 >
                   <div class="flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
                       <path d="M12 3h8v8h-8zM8 13V5h8v8H8z" />
                       <path d="M4 21V9h8v12H4z" />
                       <path d="M22 18h0" />
