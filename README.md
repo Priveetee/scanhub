@@ -23,6 +23,21 @@ For the backend, I sought a technology that was stable, well-structured, and con
 
 ---
 
+# **How to Start?**
+
+Getting started is extremely simple:
+
+1. Install Bun: https://bun.sh/
+2. Navigate to the root of the project
+3. Run `bun install` to install dependencies
+4. Run `bun run dev` to start the development server
+
+That's it, you're all set!
+
+I strongly encourage you to explore the documentation for both technologies as they are very comprehensive:
+- Svelte Kit: https://svelte.dev/docs/kit/introduction
+- Bun: https://bun.sh/docs
+
 # **Project Features**
 
 This project is completely open-source and free. You are welcome to modify and redistribute it as you wish. Feel free to create issues or contribute to the project.
