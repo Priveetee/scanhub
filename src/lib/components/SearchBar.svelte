@@ -75,8 +75,9 @@
      // console.log('handleExampleClick appelé avec:', example);
       imagePath = example;
       
-      // Forcer une mise à jour du DOM avec un délai
+      // force an update of the DOM with a little bit of delay
       setTimeout(() => {
+        // if u need to debug the focus, uncomment the line below
        // console.log('Focus appliqué, imagePath =', imagePath);
         inputElement?.focus();
       }, 10);
@@ -87,7 +88,7 @@
   
   <div class="w-full h-full flex flex-col justify-center items-center px-6">
     {#if mounted}
-      <!-- Barre de recherche -->
+      <!-- Searchbar -->
       <div 
         in:fly={{ y: 30, duration: 700, delay: 200, easing: cubicOut }}
         class="w-full max-w-xl"
@@ -299,7 +300,7 @@
         </form>
       </div>
 
-      <!-- Section d'exemples séparée et plus bas -->
+      <!-- Separate examples section below -->
       <div 
         in:fly={{ y: 20, duration: 600, delay: 400, easing: cubicOut }}
         class="w-full max-w-xl mt-10 bg-slate-900/50 p-5 rounded-xl border border-slate-700/30"

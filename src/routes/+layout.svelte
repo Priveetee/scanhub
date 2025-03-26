@@ -1,31 +1,33 @@
 <script lang="ts">
 	import '../app.css';
 	import Aurora from '$lib/components/Aurora.svelte';
-	import SearchBar from '$lib/components/SearchBar.svelte';
+	import SimpleSearchBar from '$lib/components/SimpleSearchBar.svelte';
 	import CVEResults from '$lib/components/CVEResults.svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { searchCVEs, type CVEResult } from '$lib/services/cveService';
+	import { saveRecentSearch } from '$lib/utils/searchUtils';
 	
 	let { children } = $props();
 	
 	// State - using $state() for reactivity in Svelte 5
 	let isSearching = $state(false);
 	let searchQuery = $state('');
-	let searchRegistry = $state('');
+	let searchRegistry = $state('Docker Hub'); // Simplified to just Docker Hub
 	let searchResults = $state<CVEResult[]>([]);
 	let isLoading = $state(false);
 	
-	async function onSearch(query: string, registry: string) {
-	  console.log('Searching for', query, 'in registry', registry);
+	async function handleSearch(query: string) {
+	  console.log('Searching for', query, 'in Docker Hub');
 	  searchQuery = query;
-	  searchRegistry = registry;
 	  isSearching = true;
 	  isLoading = true;
 	  
 	  try {
 	    // Call our service to get CVE data
-	    searchResults = await searchCVEs(query, registry);
+	    searchResults = await searchCVEs(query, 'dockerhub');
+	    // Save the search to recent searches
+	    saveRecentSearch(query);
 	  } catch (error) {
 	    console.error('Error searching for CVEs:', error);
 	    searchResults = [];
@@ -37,7 +39,6 @@
 	function resetSearch() {
 	  isSearching = false;
 	  searchQuery = '';
-	  searchRegistry = '';
 	  searchResults = [];
 	}
 </script>
@@ -56,7 +57,15 @@
 	    class="absolute inset-0 flex items-center justify-center px-4 z-10"
 	    transition:fade={{ duration: 300 }}
 	  >
-	    <SearchBar onSearch={onSearch} />
+	    <div class="w-full max-w-2xl">
+	      <h1 class="text-center text-3xl font-bold text-white mb-8">
+	        CVE <span class="text-blue-400">Scanner</span>
+	      </h1>
+	      <SimpleSearchBar onSearch={handleSearch} />
+	      <p class="text-center text-slate-300 mt-6 text-sm">
+	        Search for container images to find potential vulnerabilities
+	      </p>
+	    </div>
 	  </div>
 	{:else}
 	  <!-- Split screen view -->
@@ -90,18 +99,18 @@
 	            <path d="m12 19-7-7 7-7"></path>
 	            <path d="M19 12H5"></path>
 	          </svg>
-	          <span>Back to full search</span>
+	          <span>Back to search</span>
 	        </button>
 	      </div>
 	      
 	      <!-- Search form -->
 	      <div class="flex-grow flex items-center justify-center">
 	        <div class="w-full max-w-lg">
-	          <SearchBar onSearch={onSearch} />
+	          <SimpleSearchBar onSearch={handleSearch} />
 	        </div>
 	      </div>
 	      
-	      <!-- Logo/branding could go here -->
+	      <!-- Logo/branding at bottom -->
 	      <div class="mt-auto pt-6 pb-4 text-center">
 	        <div class="text-slate-500 text-sm">
 	          CVE Scanner v1.0
