@@ -2,83 +2,31 @@
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import CVEDetailModal from './CVEDetailModal.svelte';
+  import CVEList from './CVEList.svelte';
+  import CVESummary from './CVESummary.svelte';
   import type { CVEResult } from '$lib/services/cveService';
   
-  // Use $props() instead of export let in runes mode
-  let { results = [], loading = false, searchQuery = '', registry = '' } = $props<{
+  // Props
+  let { 
+    results = [], 
+    loading = false, 
+    searchQuery = '', 
+    registry = '' 
+  } = $props<{
     results?: CVEResult[];
     loading?: boolean;
     searchQuery?: string;
     registry?: string;
   }>();
   
-  // Selected CVE for detailed view
+  // State
   let selectedCVE = $state<CVEResult | null>(null);
   
-  // Severities with their colors
-  const severityMap = {
-    critical: {
-      bg: 'bg-red-500/10',
-      border: 'border-red-500',
-      text: 'text-red-400',
-      label: 'Critical'
-    },
-    high: {
-      bg: 'bg-orange-500/10',
-      border: 'border-orange-400',
-      text: 'text-orange-400',
-      label: 'High'
-    },
-    medium: {
-      bg: 'bg-yellow-500/10',
-      border: 'border-yellow-400',
-      text: 'text-yellow-400',
-      label: 'Medium'
-    },
-    low: {
-      bg: 'bg-blue-500/10',
-      border: 'border-blue-400',
-      text: 'text-blue-400',
-      label: 'Low'
-    },
-    none: {
-      bg: 'bg-gray-500/10',
-      border: 'border-gray-400',
-      text: 'text-gray-400',
-      label: 'None'
-    }
-  };
-  
-  // Format date to a more readable format
-  function formatDate(dateString: string): string {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric'
-      });
-    } catch (e) {
-      return dateString;
-    }
-  }
-  
-  // Toggle expanded state for a vulnerability
-  const expandedItems = $state(new Set<string>());
-  function toggleExpand(id: string) {
-    if (expandedItems.has(id)) {
-      expandedItems.delete(id);
-    } else {
-      expandedItems.add(id);
-    }
-  }
-  
-  // View full details in modal
-  function viewDetails(cve: CVEResult) {
+  // Functions
+  function handleViewDetails(cve: CVEResult) {
     selectedCVE = cve;
   }
   
-  // Close the modal
   function closeModal() {
     selectedCVE = null;
   }
@@ -141,127 +89,11 @@
         {/if}
       </div>
     {:else}
-      <div class="mb-4 flex justify-between items-center">
-        <div class="text-white">
-          <span class="font-medium">{results.length}</span> 
-          <span class="text-slate-400">vulnerabilities found</span>
-        </div>
-        <div class="flex space-x-2">
-          <!-- Filters could go here in the future -->
-        </div>
-      </div>
+      <!-- Show CVE summary component first -->
+      <CVESummary results={results} imageQuery={searchQuery} />
       
-      <div class="space-y-4">
-        {#each results as cve, i}
-          <div 
-            in:fly={{ y: 20, duration: 300, delay: i * 50, easing: cubicOut }}
-            class="rounded-lg bg-slate-800/70 border border-slate-700/70 overflow-hidden hover:border-slate-600/70 transition-all"
-          >
-            <!-- Header -->
-            <div class="flex items-center border-b border-slate-700/50">
-              <div class={`px-3 py-2 ${severityMap[cve.severity].bg} ${severityMap[cve.severity].border} border-l-4`}>
-                <span class={`font-medium ${severityMap[cve.severity].text}`}>
-                  {severityMap[cve.severity].label}
-                </span>
-                {#if cve.cvss_score !== undefined}
-                  <span class="ml-2 px-1.5 py-0.5 rounded bg-slate-700/70 text-white text-xs">
-                    {cve.cvss_score.toFixed(1)}
-                  </span>
-                {/if}
-              </div>
-              <div class="px-3 py-2 flex-grow">
-                <div class="font-mono text-blue-400 text-sm">{cve.id}</div>
-              </div>
-              <div class="px-3 py-2 text-sm text-slate-400">
-                {formatDate(cve.published_date)}
-              </div>
-            </div>
-            
-            <!-- Content -->
-            <div class="p-4">
-              <h3 class="text-white font-medium text-lg mb-2">{cve.title}</h3>
-              <p class="text-slate-300 text-sm mb-4 line-clamp-2">
-                {cve.description}
-              </p>
-              
-              <!-- Affected packages -->
-              <div class="mb-4">
-                <div class="text-sm text-slate-400 mb-1">Affected packages:</div>
-                <div class="flex flex-wrap gap-2">
-                  {#each cve.affected_packages as pkg}
-                    <span class="px-2 py-1 bg-slate-700/50 text-white text-xs rounded border border-slate-600/50">
-                      {pkg}
-                    </span>
-                  {/each}
-                </div>
-              </div>
-              
-              <div class="flex items-center justify-between">
-                <!-- Expand/collapse button -->
-                <button 
-                  onclick={() => toggleExpand(cve.id)}
-                  class="flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                  <span>{expandedItems.has(cve.id) ? 'Show less' : 'Show more'}</span>
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="16" 
-                    height="16" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    stroke-width="2" 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    class={`ml-1 transition-transform ${expandedItems.has(cve.id) ? 'rotate-180' : ''}`}
-                  >
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </button>
-                
-                <!-- View details button -->
-                <button
-                  onclick={() => viewDetails(cve)}
-                  class="px-3 py-1 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 hover:text-blue-200 rounded border border-blue-500/30 text-sm transition-colors flex items-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                  View Details
-                </button>
-              </div>
-              
-              <!-- Expanded content -->
-              {#if expandedItems.has(cve.id)}
-                <div 
-                  transition:fade={{ duration: 150 }}
-                  class="mt-4 pt-4 border-t border-slate-700/50"
-                >
-                  <div class="text-sm text-slate-300 whitespace-pre-line">
-                    {cve.description}
-                  </div>
-                  
-                  {#if cve.references && cve.references.length > 0}
-                    <div class="mt-4">
-                      <div class="text-sm text-slate-400 mb-1">References:</div>
-                      <ul class="list-disc list-inside text-sm text-blue-400 space-y-1">
-                        {#each cve.references as ref}
-                          <li>
-                            <a href={ref} target="_blank" rel="noopener noreferrer" class="hover:underline">
-                              {ref.length > 60 ? ref.substring(0, 60) + '...' : ref}
-                            </a>
-                          </li>
-                        {/each}
-                      </ul>
-                    </div>
-                  {/if}
-                </div>
-              {/if}
-            </div>
-          </div>
-        {/each}
-      </div>
+      <!-- Then the main CVE list with filtering, pagination, etc. -->
+      <CVEList results={results} onViewDetails={handleViewDetails} />
     {/if}
   </div>
 </div>
