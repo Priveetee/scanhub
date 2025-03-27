@@ -32,22 +32,22 @@
   }
 </script>
 
-<div class="w-full h-full flex flex-col overflow-hidden">
+<div class="w-full h-full flex flex-col">
   <!-- Header with search info -->
   <div 
     in:fly={{ y: -20, duration: 400, easing: cubicOut }}
-    class="p-5 border-b border-slate-700/70 bg-slate-800/50 backdrop-blur-sm"
+    class="p-4 md:p-5 border-b border-slate-700/70 bg-slate-800/50 backdrop-blur-sm"
   >
     <div class="flex flex-col">
       <h2 class="text-xl font-semibold text-white">
         <span class="text-blue-400">CVE</span> Analysis Results
       </h2>
       {#if searchQuery}
-        <div class="mt-2 flex items-center text-sm">
+        <div class="mt-2 flex items-center flex-wrap gap-2 text-sm">
           <div class="px-2 py-1 rounded bg-slate-700/50 border border-slate-600/50 font-mono text-slate-300">
             {searchQuery} 
           </div>
-          <span class="mx-2 text-slate-400">from</span>
+          <span class="text-slate-400">from</span>
           <div class="px-2 py-1 rounded bg-slate-700/50 border border-slate-600/50 text-slate-300">
             {registry || 'Docker Hub'}
           </div>
@@ -56,17 +56,17 @@
     </div>
   </div>
   
-  <!-- Results area -->
-  <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+  <!-- Results area - Important fix: ensure it's scrollable with proper overflow -->
+  <div class="flex-1 overflow-y-auto custom-scrollbar">
     {#if loading}
-      <div class="flex flex-col items-center justify-center h-full">
+      <div class="flex flex-col items-center justify-center h-full p-8">
         <div class="w-16 h-16 border-4 border-blue-400/20 border-t-blue-400 rounded-full animate-spin"></div>
         <p class="mt-4 text-slate-300">Analyzing vulnerabilities...</p>
       </div>
     {:else if results.length === 0}
       <div 
         in:fade={{ duration: 300 }}
-        class="flex flex-col items-center justify-center h-full text-center"
+        class="flex flex-col items-center justify-center h-full text-center p-8"
       >
         <div class="w-20 h-20 rounded-full bg-slate-800/80 flex items-center justify-center mb-6">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
@@ -89,16 +89,18 @@
         {/if}
       </div>
     {:else}
-      <!-- Show CVE summary component first -->
-      <CVESummary results={results} imageQuery={searchQuery} />
-      
-      <!-- Then the main CVE list with filtering, pagination, etc. -->
-      <CVEList results={results} onViewDetails={handleViewDetails} />
+      <div class="p-4 space-y-4">
+        <!-- Show CVE summary component first -->
+        <CVESummary results={results} imageQuery={searchQuery} />
+        
+        <!-- Then the main CVE list with filtering, pagination, etc. -->
+        <CVEList results={results} onViewDetails={handleViewDetails} />
+      </div>
     {/if}
   </div>
 </div>
 
-<!-- CVE Detail Modal -->
+<!-- CVE Detail Modal - Full-screen fixed positioning to ensure proper centering -->
 {#if selectedCVE}
   <CVEDetailModal cve={selectedCVE} onClose={closeModal} />
 {/if}
