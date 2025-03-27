@@ -13,7 +13,7 @@
 	// State - using $state() for reactivity in Svelte 5
 	let isSearching = $state(false);
 	let searchQuery = $state('');
-	let searchRegistry = $state('Docker Hub'); // Simplified to just Docker Hub
+	let searchRegistry = $state('Docker Hub'); // Simplified to just Docker Hub next i'm gonna add the functionnalities to change the registry
 	let searchResults = $state<CVEResult[]>([]);
 	let isLoading = $state(false);
 	
@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="relative min-h-screen w-full overflow-hidden">
+<div class="relative min-h-screen w-full">
 	<!-- Aurora background effect -->
 	<Aurora
 	  colorStops={["#3A29FF", "#FF94B4", "#FF3232"]}
@@ -68,21 +68,18 @@
 	    </div>
 	  </div>
 	{:else}
-	  <!-- Split screen view -->
+	  <!-- Responsive layout for search results view -->
 	  <div 
-	    class="absolute inset-0 grid grid-cols-1 md:grid-cols-2 z-10 transition-all duration-500"
+	    class="absolute inset-0 flex flex-col md:flex-row z-10"
 	    in:fade={{ duration: 300 }}
 	  >
-	    <!-- Left panel with search -->
-	    <div class="relative h-full flex flex-col p-6">
-	      <!-- Back button -->
-	      <div 
-	        in:fly={{ x: -20, duration: 300, easing: cubicOut }}
-	        class="mb-6"
-	      >
+	    <!-- Left panel with search (fixed height on mobile, full height on desktop) -->
+	    <div class="flex flex-col bg-slate-900/50 backdrop-blur-sm md:w-2/5 lg:w-1/3 border-b md:border-b-0 md:border-r border-slate-700/50">
+	      <!-- Back button and header -->
+	      <div class="p-4 border-b border-slate-700/30">
 	        <button 
 	          onclick={() => resetSearch()}
-	          class="flex items-center text-slate-300 hover:text-white transition-colors"
+	          class="flex items-center text-slate-300 hover:text-white transition-colors mb-4"
 	        >
 	          <svg 
 	            xmlns="http://www.w3.org/2000/svg" 
@@ -101,28 +98,65 @@
 	          </svg>
 	          <span>Back to search</span>
 	        </button>
+	        
+	        <!-- Title -->
+	        <h2 class="text-xl font-semibold text-white">
+	          <span class="text-blue-400">CVE</span> Scanner
+	        </h2>
 	      </div>
 	      
-	      <!-- Search form -->
-	      <div class="flex-grow flex items-center justify-center">
-	        <div class="w-full max-w-lg">
-	          <SimpleSearchBar onSearch={handleSearch} />
-	        </div>
+	      <!-- Search form - always visible and accessible -->
+	      <div class="p-4">
+	        <SimpleSearchBar onSearch={handleSearch} />
+	        
+	        {#if searchQuery}
+	          <div class="mt-4 p-3 bg-slate-800/70 rounded-lg border border-slate-700/30">
+	            <div class="text-sm text-slate-300">Current search:</div>
+	            <div class="mt-2 flex items-center gap-2">
+	              <div class="px-2 py-1.5 rounded bg-slate-700/80 border border-slate-600/50 font-mono text-blue-300 text-sm">
+	                {searchQuery} 
+	              </div>
+	              <span class="text-slate-400">in</span>
+	              <div class="px-2 py-1.5 rounded bg-slate-700/80 border border-slate-600/50 text-slate-300 text-sm">
+	                {searchRegistry}
+	              </div>
+	            </div>
+	          </div>
+	        {/if}
 	      </div>
 	      
-	      <!-- Logo/branding at bottom -->
-	      <div class="mt-auto pt-6 pb-4 text-center">
-	        <div class="text-slate-500 text-sm">
-	          CVE Scanner v1.0
+	      <!-- Status information -->
+	      {#if isLoading}
+	        <div class="mt-4 p-4 text-center">
+	          <div class="inline-block w-8 h-8 border-4 border-blue-400/20 border-t-blue-400 rounded-full animate-spin"></div>
+	          <p class="mt-3 text-slate-300 text-sm">Analyzing vulnerabilities...</p>
 	        </div>
-	      </div>
+	      {:else if searchResults.length > 0}
+	        <div class="mt-auto p-4 border-t border-slate-700/30 hidden md:block">
+	          <div class="text-sm text-slate-400">
+	            Found <span class="text-white font-medium">{searchResults.length}</span> vulnerabilities
+	          </div>
+	          <div class="flex flex-wrap gap-1 mt-2">
+	            {#each ['critical', 'high', 'medium', 'low'] as severity}
+	              {@const count = searchResults.filter(cve => cve.severity === severity).length}
+	              {#if count > 0}
+	                <div class={`px-2 py-0.5 text-xs rounded-full ${
+	                  severity === 'critical' ? 'bg-red-500/10 text-red-400' : 
+	                  severity === 'high' ? 'bg-orange-500/10 text-orange-400' : 
+	                  severity === 'medium' ? 'bg-yellow-500/10 text-yellow-400' : 
+	                  'bg-blue-500/10 text-blue-400'
+	                }`}>
+	                  {severity}: {count}
+	                </div>
+	              {/if}
+	            {/each}
+	          </div>
+	        </div>
+	      {/if}
 	    </div>
 	    
-	    <!-- Right panel with results -->
-	    <div 
-	      class="relative h-full flex flex-col md:border-l border-slate-700/50 bg-slate-900/30 backdrop-blur-sm"
-	      in:fly={{ x: 20, duration: 300, easing: cubicOut }}
-	    >
+	    <!-- Right panel with results (takes remaining space) -->
+	    <div class="flex-1 md:h-screen overflow-hidden">
 	      <CVEResults 
 	        results={searchResults} 
 	        loading={isLoading} 
