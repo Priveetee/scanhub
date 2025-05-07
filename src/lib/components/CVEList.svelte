@@ -189,32 +189,20 @@
 <!-- Sticky header with summary and filters -->
 <div class="bg-slate-800/80 backdrop-blur-md sticky top-0 z-10 rounded-lg border border-slate-700/50 shadow-lg">
   <div class="p-4">
-    <!-- Summary with vulnerability count -->
+    <!-- Summary avec nombre de vulnérabilités -->
     <div class="flex flex-wrap justify-between items-center gap-3 mb-3">
       <div>
         <h3 class="text-white font-medium flex items-center">
-          <span class={`text-lg font-semibold mr-1 ${hasManyCritical() ? 'text-red-400 animate-pulse' : ''}`}>
+          <span class={`text-lg font-semibold ${hasManyCritical() ? 'text-red-400 animate-pulse' : ''}`}>
             {getFilteredResults().length}
           </span> 
-          vulnerabilities found
+          <span class="ml-2">vulnérabilités trouvées</span>
           {#if results.length !== getFilteredResults().length}
             <span class="text-slate-400 text-sm ml-2">
-              (filtered from {results.length})
+              (sur {results.length} au total)
             </span>
           {/if}
         </h3>
-        
-        <!-- Severity counts badges -->
-        <div class="flex flex-wrap gap-1 mt-2">
-          {#each ['critical', 'high', 'medium', 'low', 'none'] as severity}
-            {@const count = getSeverityCount(severity)}
-            {#if count > 0}
-              <div class={`px-2 py-0.5 text-xs rounded-full ${severityMap[severity].bg} ${severityMap[severity].text}`}>
-                {severityMap[severity].label}: {count}
-              </div>
-            {/if}
-          {/each}
-        </div>
       </div>
       
       <div class="flex items-center gap-2">
@@ -229,14 +217,14 @@
               <path d="m15 9-6 6"></path>
               <path d="m9 9 6 6"></path>
             </svg>
-            <span>Reset filters</span>
+            <span>Réinitialiser les filtres</span>
           </button>
         {/if}
         
         <!-- Page indicator for large datasets -->
         {#if getPageCount() > 1}
           <div class="px-3 py-1.5 text-sm rounded-lg border border-slate-700/70 bg-slate-800/90 text-slate-300">
-            Page {currentPage} of {getPageCount()}
+            Page {currentPage} / {getPageCount()}
           </div>
         {/if}
       </div>
@@ -248,7 +236,7 @@
         <input
           type="text"
           bind:value={searchFilter}
-          placeholder="Filter vulnerabilities..."
+          placeholder="Filtrer les vulnérabilités..."
           class="w-full bg-slate-800/70 border border-slate-700/70 rounded-lg p-2 pl-8 text-white placeholder-slate-400 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
         />
         <svg
@@ -275,7 +263,7 @@
             class={`px-3 py-2 text-sm font-medium rounded-l-lg border ${sortField === 'severity' ? 'bg-blue-600/30 text-blue-300 border-blue-500/50' : 'bg-slate-800/70 text-slate-300 border-slate-700/70'}`}
             aria-label="Sort by severity"
           >
-            Severity
+            Sévérité
             {#if sortField === 'severity'}
               <span class="ml-1">{sortDirection === 'desc' ? '▼' : '▲'}</span>
             {/if}
@@ -304,7 +292,7 @@
       </div>
     </div>
     
-    <!-- Severity filter tabs -->
+    <!-- Severity filter tabs - conservé mais simplifié -->
     {#if results.length > 0}
       <div class="mt-3 border-t border-slate-700/40 pt-3 overflow-x-auto pb-1">
         <div class="flex flex-nowrap gap-2">
@@ -346,19 +334,19 @@
       </svg>
     </div>
     
-    <h3 class="text-white text-lg font-medium mb-2">No vulnerabilities found</h3>
+    <h3 class="text-white text-lg font-medium mb-2">Aucune vulnérabilité trouvée</h3>
     
     {#if searchFilter || selectedSeverity}
-      <p class="text-slate-400 mb-4">Try adjusting your filters to see more results.</p>
+      <p class="text-slate-400 mb-4">Essayez d'ajuster vos filtres pour voir plus de résultats.</p>
       <button 
         onclick={() => resetFilters()}
         class="px-4 py-2 bg-blue-600/20 text-blue-400 border border-blue-600/30 rounded-lg hover:bg-blue-600/30"
       >
-        Clear filters
+        Effacer les filtres
       </button>
     {:else}
       <p class="text-slate-400">
-        No vulnerabilities match your criteria.
+        Aucune vulnérabilité ne correspond à vos critères.
       </p>
     {/if}
   </div>
@@ -398,7 +386,7 @@
           
           <!-- Affected packages -->
           <div class="mb-4">
-            <div class="text-sm text-slate-400 mb-1">Affected packages:</div>
+            <div class="text-sm text-slate-400 mb-1">Packages affectés :</div>
             <div class="flex flex-wrap gap-2">
               {#each cve.affected_packages.slice(0, 5) as pkg}
                 <span class="px-2 py-1 bg-slate-700/50 text-white text-xs rounded border border-slate-600/50">
@@ -407,7 +395,7 @@
               {/each}
               {#if cve.affected_packages.length > 5}
                 <span class="px-2 py-1 bg-slate-700/50 text-white text-xs rounded border border-slate-600/50">
-                  +{cve.affected_packages.length - 5} more
+                  +{cve.affected_packages.length - 5} autres
                 </span>
               {/if}
             </div>
@@ -419,7 +407,7 @@
               onclick={() => toggleExpand(cve.id)}
               class="flex items-center text-sm text-blue-400 hover:text-blue-300 transition-colors"
             >
-              <span>{expandedItems.has(cve.id) ? 'Show less' : 'Show more'}</span>
+              <span>{expandedItems.has(cve.id) ? 'Voir moins' : 'Voir plus'}</span>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 width="16" 
@@ -445,7 +433,7 @@
                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
-              View Details
+              Voir les détails
             </button>
           </div>
           
@@ -461,7 +449,7 @@
               
               {#if cve.references && cve.references.length > 0}
                 <div class="mt-4">
-                  <div class="text-sm text-slate-400 mb-1">References:</div>
+                  <div class="text-sm text-slate-400 mb-1">Références :</div>
                   <ul class="list-disc list-inside text-sm text-blue-400 space-y-1">
                     {#each cve.references as ref}
                       <li>

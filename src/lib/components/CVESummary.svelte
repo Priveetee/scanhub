@@ -83,7 +83,7 @@
   function formatDate(dateString: string): string {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
+      return date.toLocaleDateString('fr-FR', { 
         year: 'numeric', 
         month: 'short', 
         day: 'numeric'
@@ -95,7 +95,7 @@
 </script>
 
 {#if results.length > 0}
-<div class="bg-slate-800/70 backdrop-blur-sm rounded-lg border border-slate-700/50">
+<div class="bg-slate-800/70 backdrop-blur-sm rounded-lg border border-slate-700/50 mb-6">
   <!-- Header with image info -->
   <div class="bg-slate-900/50 border-b border-slate-700/50 p-4">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
@@ -106,16 +106,13 @@
             <line x1="12" y1="9" x2="12" y2="13"></line>
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
-          Vulnerability Summary
+          Résumé des vulnérabilités
         </h2>
-        <div class="mt-1 text-slate-300">
-          <span class="px-2 py-1 bg-slate-700/50 rounded text-sm font-mono">{imageQuery}</span>
-        </div>
       </div>
       
       <div class="flex items-center">
         <div class="px-4 py-2 rounded bg-slate-700/50 flex items-center gap-2">
-          <span class="text-slate-300 text-sm">Overall risk:</span>
+          <span class="text-slate-300 text-sm">Niveau de risque :</span>
           <div class="relative h-2 w-32 bg-slate-600/50 rounded-full overflow-hidden">
             <div 
               class="absolute top-0 left-0 h-full rounded-full transition-all duration-500 ease-out"
@@ -143,40 +140,40 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-700/50">
     <!-- Severity summary -->
     <div class="p-4">
-      <h3 class="text-slate-400 text-sm font-medium mb-3">Severity</h3>
+      <h3 class="text-slate-400 text-sm font-medium mb-3">Sévérité</h3>
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-red-500"></div>
-            <span class="text-white">Critical</span>
+            <span class="text-white">Critique</span>
           </div>
           <span class="text-white font-medium">{getSeverityCounts().critical}</span>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-orange-500"></div>
-            <span class="text-white">High</span>
+            <span class="text-white">Élevée</span>
           </div>
           <span class="text-white font-medium">{getSeverityCounts().high}</span>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span class="text-white">Medium</span>
+            <span class="text-white">Moyenne</span>
           </div>
           <span class="text-white font-medium">{getSeverityCounts().medium}</span>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-            <span class="text-white">Low</span>
+            <span class="text-white">Faible</span>
           </div>
           <span class="text-white font-medium">{getSeverityCounts().low}</span>
         </div>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-gray-500"></div>
-            <span class="text-white">None</span>
+            <span class="text-white">Non définie</span>
           </div>
           <span class="text-white font-medium">{getSeverityCounts().none}</span>
         </div>
@@ -206,7 +203,7 @@
               {severity === 'critical' ? 'C' : 
                severity === 'high' ? 'H' : 
                severity === 'medium' ? 'M' : 
-               severity === 'low' ? 'L' : 'N'}
+               severity === 'low' ? 'F' : 'N'}
             </div>
           </div>
         {/each}
@@ -215,12 +212,12 @@
     
     <!-- Affected packages -->
     <div class="p-4">
-      <h3 class="text-slate-400 text-sm font-medium mb-3">Affected Packages</h3>
+      <h3 class="text-slate-400 text-sm font-medium mb-3">Packages affectés</h3>
       <div class="space-y-2">
         {#if getAffectedPackages().length === 0}
-          <div class="text-slate-300">No affected packages</div>
+          <div class="text-slate-300">Aucun package affecté</div>
         {:else}
-          <div class="text-sm text-slate-300 mb-1">{getAffectedPackages().length} unique packages</div>
+          <div class="text-sm text-slate-300 mb-1">{getAffectedPackages().length} packages uniques</div>
           <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-1 custom-mini-scrollbar">
             {#each getAffectedPackages().slice(0, 10) as pkg}
               <span class="px-2 py-1 text-xs bg-slate-700/50 text-slate-200 rounded border border-slate-600/50">
@@ -229,7 +226,7 @@
             {/each}
             {#if getAffectedPackages().length > 10}
               <span class="px-2 py-1 text-xs bg-slate-700/50 text-slate-200 rounded border border-slate-600/50">
-                +{getAffectedPackages().length - 10} more
+                +{getAffectedPackages().length - 10} autres
               </span>
             {/if}
           </div>
@@ -239,9 +236,9 @@
     
     <!-- Recently discovered -->
     <div class="p-4">
-      <h3 class="text-slate-400 text-sm font-medium mb-3">Recently Published</h3>
+      <h3 class="text-slate-400 text-sm font-medium mb-3">Publiées récemment</h3>
       {#if getRecentVulns().length === 0}
-        <div class="text-slate-300">No recent vulnerabilities</div>
+        <div class="text-slate-300">Aucune vulnérabilité récente</div>
       {:else}
         <ul class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-mini-scrollbar">
           {#each getRecentVulns() as cve}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	// Suppression de l'import Aurora qui n'est plus nécessaire
 	import SimpleSearchBar from '$lib/components/SimpleSearchBar.svelte';
 	import CVEResults from '$lib/components/CVEResults.svelte';
 	import { fade, fly } from 'svelte/transition';
@@ -91,7 +90,7 @@
 	            <path d="m12 19-7-7 7-7"></path>
 	            <path d="M19 12H5"></path>
 	          </svg>
-	          <span>Back to search</span>
+	          <span>Retour à la recherche</span>
 	        </button>
 	        
 	        <!-- Title -->
@@ -103,49 +102,42 @@
 	      <!-- Search form - always visible and accessible -->
 	      <div class="p-4">
 	        <SimpleSearchBar onSearch={handleSearch} />
-	        
-	        {#if searchQuery}
-	          <div class="mt-4 p-3 bg-slate-800/70 rounded-lg border border-slate-700/30">
-	            <div class="text-sm text-slate-300">Current search:</div>
-	            <div class="mt-2 flex items-center gap-2">
-	              <div class="px-2 py-1.5 rounded bg-slate-700/80 border border-slate-600/50 font-mono text-blue-300 text-sm">
-	                {searchQuery} 
-	              </div>
-	              <span class="text-slate-400">in</span>
-	              <div class="px-2 py-1.5 rounded bg-slate-700/80 border border-slate-600/50 text-slate-300 text-sm">
-	                {searchRegistry}
-	              </div>
-	            </div>
-	          </div>
-	        {/if}
 	      </div>
+	      
+	      <!-- Search information - Added for better visibility -->
+	      {#if searchQuery && !isLoading}
+	        <div class="px-4 py-3 bg-slate-800/50 border-y border-slate-700/30">
+	          <h3 class="text-sm text-slate-400 mb-1">Recherche en cours</h3>
+	          <div class="flex flex-col gap-2">
+	            <div class="flex items-center gap-1">
+	              <span class="text-sm text-slate-400">Image:</span>
+	              <span class="px-2 py-1 rounded text-sm bg-slate-700/50 border border-slate-600/50 font-mono text-slate-200">
+	                {searchQuery}
+	              </span>
+	            </div>
+	            <div class="flex items-center gap-1">
+	              <span class="text-sm text-slate-400">Registry:</span>
+	              <span class="px-2 py-1 rounded text-sm bg-slate-700/50 border border-slate-600/50 text-slate-200">
+	                {searchRegistry}
+	              </span>
+	            </div>
+	            {#if searchResults.length > 0}
+	              <div class="flex items-center gap-1">
+	                <span class="text-sm text-slate-400">Résultats:</span>
+	                <span class="px-2 py-1 rounded text-sm bg-slate-700/50 border border-slate-600/50 text-slate-200">
+	                  {searchResults.length} vulnérabilités
+	                </span>
+	              </div>
+	            {/if}
+	          </div>
+	        </div>
+	      {/if}
 	      
 	      <!-- Status information -->
 	      {#if isLoading}
 	        <div class="mt-4 p-4 text-center">
 	          <div class="inline-block w-8 h-8 border-4 border-blue-400/20 border-t-blue-400 rounded-full animate-spin"></div>
-	          <p class="mt-3 text-slate-300 text-sm">Analyzing vulnerabilities...</p>
-	        </div>
-	      {:else if searchResults.length > 0}
-	        <div class="mt-auto p-4 border-t border-slate-700/30 hidden md:block">
-	          <div class="text-sm text-slate-400">
-	            Found <span class="text-white font-medium">{searchResults.length}</span> vulnerabilities
-	          </div>
-	          <div class="flex flex-wrap gap-1 mt-2">
-	            {#each ['critical', 'high', 'medium', 'low'] as severity}
-	              {@const count = searchResults.filter(cve => cve.severity === severity).length}
-	              {#if count > 0}
-	                <div class={`px-2 py-0.5 text-xs rounded-full ${
-	                  severity === 'critical' ? 'bg-red-500/10 text-red-400' : 
-	                  severity === 'high' ? 'bg-orange-500/10 text-orange-400' : 
-	                  severity === 'medium' ? 'bg-yellow-500/10 text-yellow-400' : 
-	                  'bg-blue-500/10 text-blue-400'
-	                }`}>
-	                  {severity}: {count}
-	                </div>
-	              {/if}
-	            {/each}
-	          </div>
+	          <p class="mt-3 text-slate-300 text-sm">Analyse des vulnérabilités en cours...</p>
 	        </div>
 	      {/if}
 	    </div>
