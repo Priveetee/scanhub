@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import Aurora from '$lib/components/Aurora.svelte';
+	// Suppression de l'import Aurora qui n'est plus nécessaire
 	import SimpleSearchBar from '$lib/components/SimpleSearchBar.svelte';
 	import CVEResults from '$lib/components/CVEResults.svelte';
 	import { fade, fly } from 'svelte/transition';
@@ -43,13 +43,8 @@
 	}
 </script>
 
-<div class="relative min-h-screen w-full">
-	<!-- Aurora background effect -->
-	<Aurora
-	  colorStops={["#3A29FF", "#FF94B4", "#FF3232"]}
-	  speed={0.8}
-	  amplitude={1.2}
-	/>
+<div class="relative min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+	<!-- Fond d'écran simplifié avec un dégradé statique -->
 	
 	{#if !isSearching}
 	  <!-- Initial centered search view -->
@@ -74,7 +69,7 @@
 	    in:fade={{ duration: 300 }}
 	  >
 	    <!-- Left panel with search (fixed height on mobile, full height on desktop) -->
-	    <div class="flex flex-col bg-slate-900/50 backdrop-blur-sm md:w-2/5 lg:w-1/3 border-b md:border-b-0 md:border-r border-slate-700/50">
+	    <div class="flex flex-col bg-slate-900/80 backdrop-blur-sm md:w-2/5 lg:w-1/3 border-b md:border-b-0 md:border-r border-slate-700/50">
 	      <!-- Back button and header -->
 	      <div class="p-4 border-b border-slate-700/30">
 	        <button 
