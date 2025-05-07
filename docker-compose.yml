@@ -1,0 +1,11 @@
+services:
+ api:
+  build: .
+  network_mode: "host"
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
+   - /etc/docker/daemon.json:/etc/docker/daemon.json:ro
+   - ./certs:/app/certs:ro
+  env_file:
+   - .env
+  privileged: true
